@@ -11,6 +11,7 @@ import {
   HiMenu,
   HiX,
   HiChevronDown,
+  HiClipboardList,
 } from 'react-icons/hi'
 
 const navLinks = [
@@ -18,6 +19,7 @@ const navLinks = [
   { to: '/admin/loans', label: 'Loan Queue', icon: HiDocumentText, roles: ['super_admin', 'approver', 'viewer'] },
   { to: '/admin/customers', label: 'Customers', icon: HiUsers, roles: ['super_admin', 'approver', 'viewer'] },
   { to: '/admin/team', label: 'Team', icon: HiUserGroup, roles: ['super_admin'] },
+  { to: '/admin/audit-logs', label: 'Audit Logs', icon: HiClipboardList, roles: ['super_admin'] },
   { to: '/admin/settings', label: 'Settings', icon: HiCog, roles: ['super_admin'] },
 ]
 

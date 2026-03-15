@@ -157,6 +157,11 @@ router.get('/team', requireRole(...ALL_ADMIN), adminController.getTeamMembers);
 router.delete('/team/:userId', requireRole('super_admin'), adminController.deleteTeamMember);
 
 // ---------------------------------------------------------------------------
+// GET /api/admin/audit-logs
+// ---------------------------------------------------------------------------
+router.get('/audit-logs', requireRole('super_admin'), adminController.getAuditLogs);
+
+// ---------------------------------------------------------------------------
 // GET /api/admin/products
 // ---------------------------------------------------------------------------
 router.get('/products', requireRole(...ALL_ADMIN), adminController.getLoanProducts);

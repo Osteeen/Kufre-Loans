@@ -1263,4 +1263,47 @@ module.exports = {
   createLoanProduct,
   updateLoanProduct,
   deleteLoanProduct,
+  getAuditLogs,
 };
+
+// ---------------------------------------------------------------------------
+// getAuditLogs
+// ---------------------------------------------------------------------------
+async function getAuditLogs(req, res) {
+  try {
+    const tenantId = req.user.tenant_id || 1;
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit || '50', 10);
+    const offset = (page - 1) * limit;
+
+    const result = await query(
+      `SELECT al.id, al.action, al.entity_type, al.entity_id, al.metadata, al.created_at,
+              u.first_name, u.last_name, u.email, u.role
+       FROM audit_logs al
+       LEFT JOIN users u ON al.actor_id = u.id
+       WHERE al.tenant_id = $1
+       ORDER BY al.created_at DESC
+       LIMIT $2 OFFSET $3`,
+      [tenantId, limit, offset]
+    );
+
+    const countResult = await query(
+      'SELECT COUNT(*) FROM audit_logs WHERE tenant_id = $1',
+      [tenantId]
+    );
+
+    return res.json({
+      success: true,
+      message: 'Audit logs fetched.',
+      data: {
+        logs: result.rows,
+        total: parseInt(countResult.rows[0].count, 10),
+        page,
+        limit,
+      },
+    });
+  } catch (err) {
+    console.error('[GetAuditLogs] Error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to fetch audit logs.' });
+  }
+}

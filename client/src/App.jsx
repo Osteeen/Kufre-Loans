@@ -26,6 +26,7 @@ import AdminCustomersPage from './pages/admin/AdminCustomersPage'
 import AdminCustomerDetailPage from './pages/admin/AdminCustomerDetailPage'
 import AdminTeamPage from './pages/admin/AdminTeamPage'
 import AdminSettingsPage from './pages/admin/AdminSettingsPage'
+import AdminAuditLogPage from './pages/admin/AdminAuditLogPage'
 
 const ADMIN_ROLES = ['super_admin', 'approver', 'viewer']
 
@@ -159,6 +160,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute roles={ADMIN_ROLES}>
             <AdminSettingsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/audit-logs"
+        element={
+          <ProtectedRoute roles={['super_admin']}>
+            <AdminAuditLogPage />
           </ProtectedRoute>
         }
       />
