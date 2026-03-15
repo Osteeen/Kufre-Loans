@@ -959,6 +959,45 @@ async function getTeamMembers(req, res) {
 }
 
 // ---------------------------------------------------------------------------
+// deleteTeamMember
+// ---------------------------------------------------------------------------
+
+/**
+ * DELETE /api/admin/team/:userId
+ * Deletes a team member (super_admin only). Cannot delete yourself.
+ */
+async function deleteTeamMember(req, res) {
+  try {
+    const tenantId = req.user.tenant_id || 1;
+    const actorId = req.user.id;
+    const targetId = parseInt(req.params.userId, 10);
+
+    if (actorId === targetId) {
+      return res.status(400).json({ success: false, message: 'You cannot delete your own account.' });
+    }
+
+    const existing = await query(
+      'SELECT id, role FROM users WHERE id = $1 AND tenant_id = $2 AND role != $3',
+      [targetId, tenantId, 'customer']
+    );
+    if (!existing.rows.length) {
+      return res.status(404).json({ success: false, message: 'Team member not found.' });
+    }
+    if (existing.rows[0].role === 'super_admin') {
+      return res.status(403).json({ success: false, message: 'Cannot delete a super admin account.' });
+    }
+
+    await query('DELETE FROM users WHERE id = $1', [targetId]);
+    await createAuditLog(tenantId, actorId, 'team.member.deleted', 'user', targetId, {});
+
+    return res.json({ success: true, message: 'Team member deleted.' });
+  } catch (err) {
+    console.error('[DeleteTeamMember] Error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to delete team member.' });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // updateSettings
 // ---------------------------------------------------------------------------
 
@@ -1236,6 +1275,7 @@ module.exports = {
   getUserDetail,
   createTeamMember,
   getTeamMembers,
+  deleteTeamMember,
   updateSettings,
   getSettings,
   getLoanProducts,

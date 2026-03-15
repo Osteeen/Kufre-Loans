@@ -5,7 +5,7 @@ import EmptyState from '../../components/common/EmptyState'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import api, { formatDate } from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
-import { HiUserGroup, HiPlus, HiX, HiEye, HiEyeOff } from 'react-icons/hi'
+import { HiUserGroup, HiPlus, HiX, HiEye, HiEyeOff, HiTrash } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 
 const roleColors = {
@@ -35,6 +35,17 @@ export default function AdminTeamPage() {
   const [showPassword, setShowPassword] = useState(false)
 
   const isSuperAdmin = isRole('super_admin')
+
+  const handleDelete = async (memberId, memberName) => {
+    if (!window.confirm(`Are you sure you want to delete ${memberName}? This cannot be undone.`)) return
+    try {
+      await api.delete(`/admin/team/${memberId}`)
+      setTeam((prev) => prev.filter((m) => m.id !== memberId))
+      toast.success('Team member deleted.')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete team member.')
+    }
+  }
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -126,7 +137,7 @@ export default function AdminTeamPage() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Member', 'Email', 'Role', 'Joined', 'Status'].map((h) => (
+                  {['Member', 'Email', 'Role', 'Joined', 'Status', ''].map((h) => (
                     <th key={h} className="text-left px-4 py-3 font-medium text-gray-600">{h}</th>
                   ))}
                 </tr>
@@ -164,6 +175,17 @@ export default function AdminTeamPage() {
                       }`}>
                         {member.is_active !== false ? 'Active' : 'Inactive'}
                       </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {isSuperAdmin && member.id !== user?.id && member.role !== 'super_admin' && (
+                        <button
+                          onClick={() => handleDelete(member.id, `${member.first_name} ${member.last_name}`)}
+                          className="p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          title="Delete member"
+                        >
+                          <HiTrash className="w-4 h-4" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

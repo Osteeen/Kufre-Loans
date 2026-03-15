@@ -154,6 +154,7 @@ router.post(
 // GET /api/admin/team
 // ---------------------------------------------------------------------------
 router.get('/team', requireRole(...ALL_ADMIN), adminController.getTeamMembers);
+router.delete('/team/:userId', requireRole('super_admin'), adminController.deleteTeamMember);
 
 // ---------------------------------------------------------------------------
 // GET /api/admin/products
