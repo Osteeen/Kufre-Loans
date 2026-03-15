@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sudo chown:*)",
+      "Bash(npm install:*)",
+      "Bash(grep -E \"^\\(react$|vite|axios|tailwindcss|recharts|react-hot-toast|react-router-dom|react-icons\\)\")",
+      "Bash(npx vite:*)",
+      "Bash(head -20 grep -n \"logout\\\\|signOut\\\\|handleLogout\" /Users/osteen/Desktop/Osteen/Kufre/client/src/components/admin/AdminLayout.jsx)",
+      "Bash(grep -n \"message\" /Users/osteen/Desktop/Osteen/Kufre/server/routes/*.js)",
+      "Bash(lsof -ti:5001)",
+      "Bash(xargs kill:*)",
+      "Bash(lsof -ti:5173)",
+      "Bash(curl -s http://localhost:5001/api/health)",
+      "Read(//private/tmp/**)"
+    ]
+  }
+}
