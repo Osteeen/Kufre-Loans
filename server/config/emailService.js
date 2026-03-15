@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 // Shared helpers
 // ---------------------------------------------------------------------------
 
-const FROM_ADDRESS = `"Kufre Loans" <${process.env.EMAIL_USER || 'no-reply@kufre.com'}>`;
+const FROM_ADDRESS = `"Kufre Loans" <${process.env.EMAIL_FROM || process.env.EMAIL_USER || 'no-reply@kufre.com'}>`;
 const BRAND_COLOR = '#1B4332';
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || 'support@kufre.com';
 const CLIENT_URL = process.env.CLIENT_URL || 'https://app.kufre.com';
